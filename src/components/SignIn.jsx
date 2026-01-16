@@ -13,10 +13,10 @@ function SignIn(){
         // כדי להגדיר את הפורט בצד שרת ב properties:
         // server.port=8081
 
-        if (username === "" || password === "") {
-            alert("Please fill all fields");
-            return;
-        }
+        fetch("http://localhost:8081/test")
+            .then(res => res.text())
+            .then(data => alert(data)) // מציג את התשובה
+            .catch(err => console.error("Error:", err));
     }
 
     return(
