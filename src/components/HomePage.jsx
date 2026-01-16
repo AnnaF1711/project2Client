@@ -1,25 +1,9 @@
-import CustomButton from "./CustomButton.jsx";
-import CutstomInput from "./CustomInput.jsx";
-
-function HomePage (){
+function HomePage() {
     return (
-        <div>
-            Home Page
-            <div>
-                <CustomButton
-
-
-                Register now
-                />
-
-                <CustomButton
-
-
-                    Login
-                />
-            </div>
+        <div style={{ textAlign: "center", marginTop: "50px" }}>
+            <h1>WELCOME!</h1>
         </div>
-
-    )
+    );
 }
+
 export default HomePage;

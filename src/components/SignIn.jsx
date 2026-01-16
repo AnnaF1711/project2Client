@@ -2,13 +2,13 @@ import { useState } from "react";
 import CustomButton from "./CustomButton.jsx";
 import CustomInput from "./CustomInput.jsx";
 
-function SignUp(){
+function SignIn(){
     const [username,setUsername]=useState ("");
     const [password,setPassword]=useState ("");
 
-    function handleSignUp() {
+    function handleSignIn() {
         // סתם משהו בסיסי - בהמשך נכתוב כאן את הבקשה לשרת שבודקת שהיוזר אכן קיים ואם הוא קיים אז יבדוק אם הססמה נכונה (אבל זה יהיה בשרת בקונטרולר - ולידציה)
-        // fetch('http://localhost:8081/sign-up') - זה יהיה הפורט 8081 וזה מה שנגדיר בשרת
+       // fetch('http://localhost:8081/sign-in') - זה יהיה הפורט 8081 וזה מה שנגדיר בשרת
 
         // כדי להגדיר את הפורט בצד שרת ב properties:
         // server.port=8081
@@ -22,7 +22,7 @@ function SignUp(){
     return(
         <div>
             <CustomInput
-                placeholder ={"Choose a username"}
+                placeholder ={"Enter your username"}
                 value={username}
                 onChange={(event)=>{
                     setUsername(event.target.value)
@@ -30,7 +30,7 @@ function SignUp(){
             />
 
             <CustomInput
-                placeholder ={"Choose a password"}
+                placeholder ={"Enter your password"}
                 value={password}
                 onChange={(event)=>{
                     setPassword(event.target.value)
@@ -38,11 +38,11 @@ function SignUp(){
             />
 
             <CustomButton
-                text="Sign Up"
-                action={handleSignUp}
+                text="Sign In"
+                action={handleSignIn}
             />
 
         </div>
     )
 }
-export default SignUp;
+export default SignIn;
