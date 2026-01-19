@@ -42,11 +42,11 @@ function SignUp(){
             />
 
             <CustomButton
-                text="Sign Up"
+                text={"Sign Up"}
                 disabled={username.length === 0 || password.length === 0 || buttonDisabled} // מתי הכפתור לא יהיה לחיץ
                 action={() => {
                     setButtonDisabled(true); // לא יהיה לחיץ כל עוד שולח בקשה (הזין כבר פרטים)
-                    axios.post("http://localhost:8080/register-user",{name:username,password:password}).
+                    axios.post("http://localhost:8080/sign-up",{name:username,password:password}).
                     then((response)=>{
                         console.log(response.data)
                         setButtonDisabled(false) // אחרי שחזרה תגובה הכפתור יהיה לחיץ (ניתן להירשם)

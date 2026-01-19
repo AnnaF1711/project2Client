@@ -6,16 +6,37 @@ import axios from "axios";
 function SignIn(){
     const [username,setUsername]=useState ("");
     const [password,setPassword]=useState ("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [errorCode, setErrorCode] = useState(null);
+
 
     function handleSignIn() { // תישלח בקשת גט לשרת בכל לחיצת כפתור התחברות
-        // סתם משהו בסיסי - בהמשך נכתוב כאן את הבקשה לשרת שבודקת שהיוזר אכן קיים ואם הוא קיים אז יבדוק אם הססמה נכונה (אבל זה יהיה בשרת בקונטרולר - ולידציה)
-       // axios.get("http://localhost:8080/sign-in?username=" + username + "password=" +password) - זה יהיה הפורט 8080 וזה מה שנגדיר בשרת
-
+        axios.post("http://localhost:8080/sign-up",{name:username,password:password}) // בקשת פוסט למרות שלא מפרסמים מידע חדש - כדי שהססמה לא תהיה גלויה בנתיב
+            .then((response) => {
+                if (response.data.success) {
+                    alert("Success");
+                } else {
+                    setErrorCode(response.data.errorCode);
+                }
+            })
     }
 
     return(
         <div>
+
+            {
+                errorCode != null && (
+                    <>
+                        Something went wrong
+                        <div>
+                            error {errorCode}
+                        </div>
+                    </>
+                )
+            }
+
             <CustomInput
+                type={"text"}
                 placeholder ={"Enter your username"}
                 value={username}
                 onChange={(event)=>{
@@ -24,6 +45,7 @@ function SignIn(){
             />
 
             <CustomInput
+                type={"password"} // הסתרה בעת הכנסת הססמה
                 placeholder ={"Enter your password"}
                 value={password}
                 onChange={(event)=>{
@@ -31,8 +53,14 @@ function SignIn(){
                 }}
             />
 
+            <button onClick={() => { // כפתור להצגת הססמה שמוזנת באינפוט
+                setShowPassword(!showPassword)
+            }}>
+                {showPassword ? "Hide" : "Show"}
+            </button>
+
             <CustomButton
-                text="Sign In"
+                text={"Sign In"}
                 action={handleSignIn}
             />
 

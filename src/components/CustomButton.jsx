@@ -14,9 +14,9 @@ function CustomButton(props) {
                     borderRadius: '5px',
 
                 }}
+                text={props.text}
                 disabled={props.disabled}
                 onClick={props.action}>{/*גם פה מקבל disable מבחוץ*/}
-                {props.text}
             </button>
         </span>
     )
