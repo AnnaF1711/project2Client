@@ -9,15 +9,8 @@ function SignIn(){
 
     function handleSignIn() { // תישלח בקשת גט לשרת בכל לחיצת כפתור התחברות
         // סתם משהו בסיסי - בהמשך נכתוב כאן את הבקשה לשרת שבודקת שהיוזר אכן קיים ואם הוא קיים אז יבדוק אם הססמה נכונה (אבל זה יהיה בשרת בקונטרולר - ולידציה)
-       // fetch('http://localhost:8080/sign-in') - זה יהיה הפורט 8080 וזה מה שנגדיר בשרת
+       // axios.get("http://localhost:8080/sign-in?username=" + username + "password=" +password) - זה יהיה הפורט 8080 וזה מה שנגדיר בשרת
 
-        // כדי להגדיר את הפורט בצד שרת ב properties:
-        // server.port=8080
-
-        fetch("http://localhost:8080/hello")
-            .then(res => res.text())
-            .then(data => alert(data)) // מציג את התשובה
-            .catch(err => console.error("Error:", err));
     }
 
     return(
