@@ -8,7 +8,7 @@ function CustomInput(props){
                 backgroundColor:"transparent",
                 color:"black"
             }}
-            type={props.typ}
+            type={props.type}
             placeholder={props.placeholder}
             onChange={props.onChange}
             value={props.value}
