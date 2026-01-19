@@ -11,7 +11,7 @@ function SignIn(){
 
 
     function handleSignIn() { // תישלח בקשת גט לשרת בכל לחיצת כפתור התחברות
-        axios.post("http://localhost:8080/sign-up",{name:username,password:password}) // בקשת פוסט למרות שלא מפרסמים מידע חדש - כדי שהססמה לא תהיה גלויה בנתיב
+        axios.post("http://localhost:8080/sign-in",{name:username,password:password}) // בקשת פוסט למרות שלא מפרסמים מידע חדש - כדי שהססמה לא תהיה גלויה בנתיב
             .then((response) => {
                 if (response.data.success) {
                     alert("Success");
