@@ -5,7 +5,7 @@ import axios from "axios";
 
 function SignUp(){
     const [username,setUsername]=useState ("");
-    const [password,setPassword]=useState ("");
+    const [password,setPassword]=useState (""); // מועבים משתנים ולא אובייקט עם שדות אז נתייחס בהתאם במתודה בצד שרת
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [errorCode, setErrorCode] = useState(null);
 
@@ -46,7 +46,7 @@ function SignUp(){
                 disabled={username.length === 0 || password.length === 0 || buttonDisabled} // מתי הכפתור לא יהיה לחיץ
                 action={() => {
                     setButtonDisabled(true); // לא יהיה לחיץ כל עוד שולח בקשה (הזין כבר פרטים)
-                    axios.post("http://localhost:8080/sign-up",{name:username,password:password}).
+                    axios.post("http://localhost:8080/sign-up",{username:username,password:password}).
                     then((response)=>{
                         console.log(response.data)
                         setButtonDisabled(false) // אחרי שחזרה תגובה הכפתור יהיה לחיץ (ניתן להירשם)

@@ -2,23 +2,31 @@ import { useState } from "react";
 import CustomButton from "./CustomButton.jsx";
 import CustomInput from "./CustomInput.jsx";
 import axios from "axios";
+import Dashboard from "./Dashboard.jsx";
 
 function SignIn(){
     const [username,setUsername]=useState ("");
     const [password,setPassword]=useState ("");
     const [showPassword, setShowPassword] = useState(false);
     const [errorCode, setErrorCode] = useState(null);
+    const [signedIn, setSignedIn] = useState(false); // בשביל המעבר לדשבורד
 
 
-    function handleSignIn() { // תישלח בקשת גט לשרת בכל לחיצת כפתור התחברות
-        axios.post("http://localhost:8080/sign-in",{name:username,password:password}) // בקשת פוסט למרות שלא מפרסמים מידע חדש - כדי שהססמה לא תהיה גלויה בנתיב
+    function handleSignIn() { // תישלח בקשה לשרת בכל לחיצת כפתור התחברות
+        axios.post("http://localhost:8080/sign-in",{username:username,password:password}) // בקשת פוסט למרות שלא מפרסמים מידע חדש - כדי שהססמה לא תהיה גלויה בנתיב
             .then((response) => {
                 if (response.data.success) {
-                    alert("Success");
+                    //alert("Success");
+                    setSignedIn(true); // מעבר לדשבורד שמציג את כל המידע בחשבון של היוזר אחרי ההתחברות
                 } else {
                     setErrorCode(response.data.errorCode);
+                    setSignedIn(false);
                 }
             })
+    }
+
+    if (signedIn) {
+        return <Dashboard username={username} password={password} />; // מעבר לדשבורד אם ההתחברות הצליחה
     }
 
     return(
