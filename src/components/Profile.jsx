@@ -1,5 +1,7 @@
 import { useState } from "react";
 import "./Profile.css";
+import CustomButton from "./CustomButton.jsx";
+import CustomInput from "./CustomInput.jsx";
 
 function Profile({ user, followers, following, onUpdateProfileImage }) { // לא שולח את הבקשות אלא הדשבורד
     const [newImageUrl, setNewImageUrl] = useState("");
@@ -49,7 +51,7 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
 
             {/*מתחת לזה נציג את האפשרות לעדכן את תמונת הפרופיל עם אינפוט, כפתור והודעה מתאימה*/}
             <div className="profile-update-section">
-                <input
+                <CustomInput
                     type="text"
                     placeholder="New image URL"
                     value={newImageUrl}
@@ -57,12 +59,11 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
                     className="profile-input"
                 />
 
-                <button
-                    onClick={handleUpdateImage}
+                <CustomButton
+                    text="Update"
+                    action={handleUpdateImage}
                     className="profile-button"
-                >
-                    Update
-                </button>
+                />
             </div>
 
             {localError && (
@@ -73,20 +74,22 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
 
             {/*מתחת לזה הכפתורים של הצגת הרשימות של העוקבים/נעקבים*/}
             <div className="profile-list-section">
-                <button
-                    onClick={() => setShowFollowers(!showFollowers)}
-                    className="profile-toggle-button"
-                >
-                    {showFollowers ? "Hide followers" : "Show followers"} {/*יציג לפי משתנה בוליאני שמתעדכן*/}
-                </button>
+                <div className="profile-toggle-buttons"> {/*הפרדה בין הכפתורים*/}
+                    <CustomButton
+                        text={showFollowers ? "Hide followers" : "Show followers"} // יציג לפי משתנה בוליאני שמתעדכן
+                        action={() => setShowFollowers(!showFollowers)}
+                        className="profile-toggle-button"
+                    />
 
-                <button
-                    onClick={() => setShowFollowing(!showFollowing)}
-                    className="profile-toggle-button"
-                >
-                    {showFollowing ? "Hide following" : "Show following"}
-                </button>
+                    <CustomButton
+                        text={showFollowing ? "Hide following" : "Show following"}
+                        action={() => setShowFollowing(!showFollowing)}
+                        className="profile-toggle-button"
+                    />
+                </div>
 
+
+                {/*מתחת לכפתורים*/}
                 {showFollowers && (
                     <div className="profile-list-box">
                         {followers.length === 0 ? ( // אם אין עוקבים יציג הודעה אחרת יציג את העוקבים (שמות משתמש)

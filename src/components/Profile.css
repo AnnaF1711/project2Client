@@ -44,7 +44,6 @@
 
 .profile-input {
     flex: 1;
-    padding: 6px;
 }
 
 .profile-button {
@@ -65,9 +64,14 @@
     border-top: 1px solid #eee;
 }
 
-/* הכפתורים של הצגת הרשימות בשורה אחת */
+/* הכפתורים של הצגת הרשימות שיהיו בשורה אחת */
 .profile-list-section button {
     margin-right: 8px;
+}
+/*מיקום הכפתורים */
+.profile-toggle-buttons {
+    display: flex;
+    gap: 8px;
 }
 
 /* הרשימה */
