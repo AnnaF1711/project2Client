@@ -1,202 +1,189 @@
 // נציג את הדשבורד אחרי המסך של SignIn
 // מכאן ננהל את כל הבקשות שיהיו לשרת שבאות אחרי ההתחברות
-// כאן נציג את תתי הקומפוננטות פיד, יוזר-פוסטס, פרופיל שזה יהיה נטו ui והן יקבלו בפרופס מהדשבורד את מה שצריך להציג בהן
+// כאן נציג את תתי הקומפוננטות פיד, יוזר-פוסטס, חיפוש משתמשים, פרופיל שזה התמונה והפוסטים שלי - יהיה נטו ui והן יקבלו בפרופס מהדשבורד את מה שצריך להציג בהן
 // את הcallbacks של הבקשות עבור כל קומפוננטה ננהל מהדשבורד
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Profile from "./Profile.jsx";
-import UserPosts from "./UserPosts.jsx";
-import Feed from "./Feed.jsx";
+import Cookies from "js-cookie";
 
-function Dashboard({ username, password }) {
+import Profile from "./Profile.jsx"; // שם משתמש+תמונה
+import UserPosts from "./UserPosts.jsx"; // הפוסטים שלי
+import Feed from "./Feed.jsx"; // פוסטים של מי שאני עוקבת אחריהם
+import UserSearch from "./UserSearch.jsx"; // חיפוש משתמשים למעקב
 
-    const [profileImageUrl, setProfileImageUrl] = useState(null);
-    const [following, setFollowing] = useState([]); //  שמות משתמש של יוזרים שהיוזר המחובר (אני) עוקב אחריהם
-    const [myPosts, setMyPosts] = useState([]);  // הפוסטים של היוזר המחובר
-    const [feedPosts, setFeedPosts] = useState([]); // פיד נעקבים - 20 פוסטים אחרונים
-    const [loading, setLoading] = useState(true); // כל לא חזרו תגובות את כל הבקשות מהשרת של מה שצריך להציג בדשבורד - יציג loading לפי משתנה בוליאני
+function Dashboard() {
+    const [user, setUser] = useState(null);
+    const [myPosts, setMyPosts] = useState([]);
+    const [feedPosts, setFeedPosts] = useState([]);
+    const [searchResults, setSearchResults] = useState([]);
+    const [followers, setFollowers] = useState([]); // נעקים שלי (בפרופיל)
+    const [following, setFollowing] = useState([]); // עוקבים שלי (בפרופיל)
 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
-    // =======================================================
-    // פונקציות שטוענות את כל החלקים של הדשבורד ע״י שליחת הבקשות לשרת (יוצגו רק כאשר התקבלו תגובות ל*כל* הבקשות)
-    const loadProfile = (onRequestFinished) => {
-        axios
-            .post("http://localhost:8080/dashboard/profile", null, {
-                params: { username, password },
+    const token = Cookies.get("token");
+
+    useEffect(() => {
+        if (!token) {
+            setError("User not authenticated");
+            setLoading(false);
+            return;
+        }
+
+        Promise.all([
+            axios.get("http://localhost:8080/dashboard/profile", {
+                headers: { Authorization: token }
+            }),
+            axios.get("http://localhost:8080/dashboard/my-posts", {
+                headers: { Authorization: token }
+            }),
+            axios.get("http://localhost:8080/dashboard/feed", {
+                headers: { Authorization: token }
+            }),
+            axios.get("http://localhost:8080/dashboard/followers", {
+                headers: { Authorization: token }
+            }),
+            axios.get("http://localhost:8080/dashboard/following", {
+                headers: { Authorization: token }
             })
-            .then((res) => {
-                if (res.data.success) {
-                    setProfileImageUrl(res.data.user?.profileImageUrl || null);
+        ])
+            .then(([profileRes, myPostsRes, feedRes, followersRes, followingRes]) => {
+                if (profileRes.data.success) {
+                    setUser(profileRes.data.data);
+                }
+                if (myPostsRes.data.success) {
+                    setMyPosts(myPostsRes.data.data || []);
+                }
+                if (feedRes.data.success) {
+                    setFeedPosts(feedRes.data.data || []);
+                }
+                if (followersRes.data.success) {
+                    setFollowers(followersRes.data.data || []);
+                }
+                if (followingRes.data.success) {
+                    setFollowing(followingRes.data.data || []);
                 }
             })
             .catch(() => {
-                alert("Failed to load profile");
+                setError("Failed to load dashboard");
             })
-            .then(() => {
-                onRequestFinished();
+            .finally(() => {
+                setLoading(false);
             });
-    };
+    }, [token]);
 
-    const loadFollowing = (onRequestFinished) => {
-        axios
-            .post("http://localhost:8080/dashboard/following", null, {
-                params: { username, password },
-            })
+    const updateProfileImage = (imageUrl) => {
+        axios.post(
+            "http://localhost:8080/dashboard/profile-image",
+            null,
+            {
+                headers: { Authorization: token },
+                params: { imageUrl }
+            }
+        )
             .then((res) => {
                 if (res.data.success) {
-                    setFollowing(res.data.data || []);
+                    setUser((prev) => ({
+                        ...prev,
+                        profileImageUrl: imageUrl
+                    }));
                 }
             })
-            .catch(() => {
-                alert("Failed to load following");
-            })
-            .then(() => {
-                onRequestFinished();
-            });
-    };
-
-    const loadMyPosts = (onRequestFinished) => {
-        axios
-            .post("http://localhost:8080/dashboard/my-posts", null, {
-                params: { username, password },
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    setMyPosts(res.data.data || []);
-                }
-            })
-            .catch(() => {
-                alert("Failed to load my posts");
-            })
-            .then(() => {
-                onRequestFinished();
-            });
-    };
-
-    const loadFeed = (onRequestFinished) => {
-        axios
-            .post("http://localhost:8080/dashboard/feed", null, {
-                params: { username, password },
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    setFeedPosts(res.data.data || []);
-                }
-            })
-            .catch(() => {
-                alert("Failed to load feed");
-            })
-            .then(() => {
-                onRequestFinished();
-            });
-    };
-
-    // =======================================================
-    // פעולות שהמשתמש יעשה - עדכונים בפרופיל
-
-    const updateProfileImage = (newImageUrl) => {
-        axios
-            .post("http://localhost:8080/dashboard/profile-image", null, {
-                params: { username, password, imageUrl: newImageUrl },
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    setProfileImageUrl(newImageUrl);
-                } else {
-                    alert("Error: " + res.data.errorCode);
-                }
-            })
-            .catch(() => {
-                alert("Failed to update profile image");
-            });
-    };
-
-    const followUser = (targetUsername) => {
-        axios
-            .post("http://localhost:8080/dashboard/follow", null, {
-                params: { username, password, targetUsername },
-            })
-            .then((res) => {
-                if (res.data.success) {
-                    setFollowing((prev) => [...prev, targetUsername]); // עדכון רשימת הנעקבים שהייתה עד כה יחד עם המשתנה הנעקב החדש
-                    loadFeed(() => {}); // רענון הפיד כי היה שינוי בנעקבים של היוזר ולכן יכול להיות שינוי בפוסטים שיציג לו בפיד (רק במקרה הזה יש שינוי כזה שצריך לעשות שוב load לרכיב אחר)
-                } else {
-                    alert("Error: " + res.data.errorCode);
-                }
-            })
-            .catch(() => {
-                alert("Failed to follow user");
-            });
+            .catch(() => alert("Failed to update image"));
     };
 
     const createPost = (text) => {
-        axios
-            .post("http://localhost:8080/dashboard/new-post", null, {
-                params: { username, password, content: text },
-            })
+        axios.post(
+            "http://localhost:8080/dashboard/new-post",
+            null,
+            {
+                headers: { Authorization: token },
+                params: { content: text }
+            }
+        )
             .then((res) => {
                 if (res.data.success) {
-                    setMyPosts((prev) => [res.data.data, ...prev]); // יביא את כל הפוסטים שהיו עד כה כולל החדש
-                } else {
-                    alert("Error: " + res.data.errorCode);
+                    setMyPosts((prev) => [res.data.data, ...prev]);
                 }
             })
-            .catch(() => {
-                alert("Failed to create post");
-            });
+            .catch(() => alert("Failed to create post"));
     };
 
-    // =======================================================
-    // טעינה ראשונית של הדשבורד - נמצא אחרי המתודות של הבקשות לשרת כדי שנוכל לגשת אליהן כאן
-    useEffect(() => {
-       // loading=true תזכורת ש
-        let requestsLeft = 4; // כמה בקשות עוד לא הסתיימו
-        const onRequestFinished = () => { // מה שנעביר לכל בקשה לשרת של רכיבי הדשבורד כדי שנוכל לעקוב כמה בקשות עוד נותרו, רק כאשר אחרי הבקשה האחרונה נקבל 0 אז bשנה את הערך של לואדינג לפולס ונוכל להציג את רכיבי הדשבורד
-            requestsLeft = requestsLeft - 1;
-            if (requestsLeft === 0) {
-                setLoading(false); // רק כשכולן הסתיימו נוכל להציג את מה שחזר (את רכיבי הדשבורד)
+    const followUser = (targetUsername) => {
+        axios.post(
+            "http://localhost:8080/dashboard/follow",
+            null,
+            {
+                headers: { Authorization: token },
+                params: { targetUsername }
             }
-        };
-        // שליחת הבקשות להצגת רכיבי הדשבורד:
-        loadProfile(onRequestFinished);
-        loadFollowing(onRequestFinished);
-        loadMyPosts(onRequestFinished);
-        loadFeed(onRequestFinished);
-    }, []);
+        )
+            .then((res) => {
+                if (res.data.success) {
+                    // רענון פיד אחרי follow
+                    return axios.get("http://localhost:8080/dashboard/feed", {
+                        headers: { Authorization: token }
+                    });
+                }
+            })
+            .then((feedRes) => {
+                if (feedRes?.data?.success) {
+                    setFeedPosts(feedRes.data.data || []);
+                }
+            })
+            .catch(() => alert("Failed to follow user"));
+    };
 
-    // =======================================================
+    const searchUsers = (query) => {
+        axios.get("http://localhost:8080/dashboard/search-users", {
+            headers: { Authorization: token },
+            params: { query }
+        })
+            .then((res) => {
+                if (res.data.success) {
+                    setSearchResults(res.data.data || []);
+                }
+            })
+            .catch(() => alert("Failed to search users"));
+    };
+
+
+    if (loading) {
+        return <div>Loading dashboard...</div>;
+    }
+
+    if (error) {
+        return <div>{error}</div>;
+    }
 
     return (
         <div>
-            {loading ? ( // כל עוד loadin=true יציג הודעה שבטעינה
-                <div>
-                    Loading dashboard...
-                </div>
-            ) : ( // כאשר חזרו תדובות לכל הבקשות לשרת להצגת כל פרטי הדשבורד ו- loading=false:
-                <>
-                    <h2>Dashboard</h2>
+            <h2>Dashboard</h2>
 
-                    <Profile
-                        username={username}
-                        profileImageUrl={profileImageUrl}
-                        following={following}
-                        onUpdateProfileImage={updateProfileImage}
-                        onFollowUser={followUser}
-                    />
+            <Profile // כל מה שיציג בחלק של הפרופיל:
+                user={user}
+                followers={followers}
+                following={following}
+                onUpdateProfileImage={updateProfileImage}  // עדכון התמונה מתבצע דרך הפרופיל
+            />
 
-                    <UserPosts
-                        posts={myPosts}
-                        onCreatePost={createPost}
-                    />
+            <UserSearch // חיפוש משתמשים למעקב
+                results={searchResults}
+                onSearch={searchUsers}
+                onFollowUser={followUser}
+            />
 
-                    <Feed
-                        posts={feedPosts}
-                    />
-                </>
-            )}
+            <UserPosts
+                posts={myPosts}
+                onCreatePost={createPost}
+            />
+
+            <Feed // הפוסטים של מי שאני עוקבת אחריהם
+                posts={feedPosts}
+            />
         </div>
     );
-
 }
 
 export default Dashboard;

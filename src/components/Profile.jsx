@@ -1,17 +1,128 @@
-function Profile(){
-    // קומפוננת הפרופיל שמוצגת בקומפוננת הדשבורד תכיל:
-    // תמונת פרופיל (אם יש. תהיה אפשרות להוסיף תמונה פרופיל על ידי בקשת פוסט לשרת שתשמור במקביל בדאטה בייס את התמונה בטבלת היוזרים)
-    // שם המשתמש של היוזר
-    // רשימת האנשים שהוא עוקב אחריהם (שזו תהיה בקשת גט לשרת עם מתודה שמביאה לי מהדאטה בייס מטבלת העוקבים-נעקבים את כל האנשים שהיוזר המחובר עוקב אחריהם)
-    // אופציה לחיפוש משתמשים שרשומים באפליקציה - חיפוש לפי שם משתמש עם דרופ דאון שיראה לי את מי שאני מחפשת אם הוא קיים וכל מי שמופיעים לי שם יהיה אופציה לעשות לשם עוקב (כפתור פולואו שיוסיף אותם ברשימת עוקבים - נעקבים כנעקבים של היוזר המחובר)
-    // תזכורת - הבקשות יהיו מנוהלות בדשבורד
+import { useState } from "react";
+import "./Profile.css";
 
+function Profile({ user, followers, following, onUpdateProfileImage }) { // לא שולח את הבקשות אלא הדשבורד
+    const [newImageUrl, setNewImageUrl] = useState("");
+    const [localError,setLocalError] = useState("");
+    // נציג את רשימות העוקבים/נעקבים ע״י כפתור - האם רוצים להציג אותם
+    const [showFollowers,setShowFollowers] = useState(false);
+    const [showFollowing,setShowFollowing] = useState(false);
+
+    const handleUpdateImage = () => {
+        setLocalError("");
+        if (newImageUrl.trim() === "") {
+            setLocalError("Please enter an image URL");
+            return; // אם אין שום עדכון נצא - שלא תשלח בקשה סתם
+        }
+        onUpdateProfileImage(newImageUrl); // עדכון התמונה
+        setNewImageUrl(""); // ניקוי האינפוט אחרי עדכון התמונה
+    };
+
+    if (!user) {
+        return <div>No profile data</div>;
+    }
 
     return (
-        <div>
+        <div className="profile-card">
+            <div className="profile-header">
+                {user.profileImageUrl && ( // הצגת התמונה
+                    <img
+                        src={user.profileImageUrl}
+                        alt="Profile"
+                        className="profile-image"
+                    />
+                )}
 
+                <div> {/*הצגת היוזרניים עם מספר עוקבים/נעקבים*/}
+                    <div className="profile-username">{user.username}</div>
+
+                    <div className="profile-stats">
+                        <span>
+                            <strong>{followers.length}</strong> followers
+                        </span>
+                        <span>
+                            <strong>{following.length}</strong> following
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            {/*מתחת לזה נציג את האפשרות לעדכן את תמונת הפרופיל עם אינפוט, כפתור והודעה מתאימה*/}
+            <div className="profile-update-section">
+                <input
+                    type="text"
+                    placeholder="New image URL"
+                    value={newImageUrl}
+                    onChange={(e) => setNewImageUrl(e.target.value)}
+                    className="profile-input"
+                />
+
+                <button
+                    onClick={handleUpdateImage}
+                    className="profile-button"
+                >
+                    Update
+                </button>
+            </div>
+
+            {localError && (
+                <div className="profile-error">
+                    {localError}
+                </div>
+            )}
+
+            {/*מתחת לזה הכפתורים של הצגת הרשימות של העוקבים/נעקבים*/}
+            <div className="profile-list-section">
+                <button
+                    onClick={() => setShowFollowers(!showFollowers)}
+                    className="profile-toggle-button"
+                >
+                    {showFollowers ? "Hide followers" : "Show followers"} {/*יציג לפי משתנה בוליאני שמתעדכן*/}
+                </button>
+
+                <button
+                    onClick={() => setShowFollowing(!showFollowing)}
+                    className="profile-toggle-button"
+                >
+                    {showFollowing ? "Hide following" : "Show following"}
+                </button>
+
+                {showFollowers && (
+                    <div className="profile-list-box">
+                        {followers.length === 0 ? ( // אם אין עוקבים יציג הודעה אחרת יציג את העוקבים (שמות משתמש)
+                            <div>No followers yet</div>
+                        ) : (
+                            followers.map((username) => (
+                                <div
+                                    key={username}
+                                    className="profile-list-item"
+                                >
+                                    {username}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
+
+                {showFollowing && (
+                    <div className="profile-list-box">
+                        {following.length === 0 ? (
+                            <div>Not following anyone yet</div>
+                        ) : (
+                            following.map((username) => (
+                                <div
+                                    key={username}
+                                    className="profile-list-item"
+                                >
+                                    {username}
+                                </div>
+                            ))
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
-
-    )
+    );
 }
+
 export default Profile;

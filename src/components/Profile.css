@@ -1,0 +1,93 @@
+.profile-card {
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 12px;
+    max-width: 360px;
+    background-color: #fff;
+    margin-bottom: 20px;
+}
+
+/* כותרת */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px; /* רווח למטה */
+}
+
+.profile-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-username {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 4px;
+}
+
+.profile-stats {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: #555;
+}
+
+/* החלק של עדכון התמונה */
+.profile-update-section {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px; /* ירידה למטה מהפרופיל */
+}
+
+.profile-input {
+    flex: 1;
+    padding: 6px;
+}
+
+.profile-button {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.profile-error {
+    margin-top: 6px;
+    color: red;
+    font-size: 12px;
+}
+
+/* החלק של רשימות עוקבים/נעקים מתחת*/
+.profile-list-section {
+    margin-top: 16px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+}
+
+/* הכפתורים של הצגת הרשימות בשורה אחת */
+.profile-list-section button {
+    margin-right: 8px;
+}
+
+/* הרשימה */
+.profile-list-box {
+    margin-top: 8px;
+    padding: 8px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    max-height: 120px;
+    overflow-y: auto;
+    font-size: 13px;
+    background-color: #fafafa;
+}
+
+/* יוזר ברשימה */
+.profile-list-item {
+    padding: 4px 0;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.profile-list-item:last-child {
+    border-bottom: none;
+}
