@@ -30,7 +30,7 @@ function Dashboard() {
             setLoading(false);
             return;
         }
-
+        // הבקשות שנשלחות מיד כדי להציג את רכיבי הדשבורד:
         Promise.all([
             axios.get("http://localhost:8080/dashboard/profile", {
                 headers: { Authorization: token }
@@ -50,7 +50,7 @@ function Dashboard() {
         ])
             .then(([profileRes, myPostsRes, feedRes, followersRes, followingRes]) => {
                 if (profileRes.data.success) {
-                    setUser(profileRes.data.data);
+                    setUser(profileRes.data.data); // בכל בקשה בדשבורד קונטרולר חוזר object response אם זה תקין שהשדה שלו data זה האובייקט שמחזירים
                 }
                 if (myPostsRes.data.success) {
                     setMyPosts(myPostsRes.data.data || []);
@@ -136,6 +136,11 @@ function Dashboard() {
     };
 
     const searchUsers = (query) => {
+        if (query.trim() === "") {
+            setSearchResults([]);
+            return;
+        }
+
         axios.get("http://localhost:8080/dashboard/search-users", {
             headers: { Authorization: token },
             params: { query }
@@ -161,17 +166,17 @@ function Dashboard() {
         <div>
             <h2>Dashboard</h2>
 
-            <Profile // כל מה שיציג בחלק של הפרופיל:
+            <Profile // כל מה שיציג בחלק של הפרופיל: (שם יציג מה שחוזר מהבקשות של הרכיבים האלה)
                 user={user}
                 followers={followers}
                 following={following}
                 onUpdateProfileImage={updateProfileImage}  // עדכון התמונה מתבצע דרך הפרופיל
             />
 
-            <UserSearch // חיפוש משתמשים למעקב
+            <UserSearch // חיפוש משתמשים למעקב (בתוך הקומפוננטה שמים להם עוקב, הבקשה כמו כולן בדשבורד אבל מנוהלת מיוזר סרץ׳)
                 results={searchResults}
-                onSearch={searchUsers}
-                onFollowUser={followUser}
+                onSearch={searchUsers} // הערך שהיוזר יחפש ששולחים בבקשה למציאת היוזר
+                onFollowUser={followUser} // למעקב אחרי היוזר/ים שמציג בתוצאת חיפוש
             />
 
             <UserPosts
