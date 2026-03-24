@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 
-import Profile from "./Profile.jsx"; // שם משתמש+תמונה
+import Profile from "./Profile.jsx"; // שם משתמש + תמונה
 import UserPosts from "./UserPosts.jsx"; // הפוסטים שלי
 import Feed from "./Feed.jsx"; // פוסטים של מי שאני עוקבת אחריהם
 import UserSearch from "./UserSearch.jsx"; // חיפוש משתמשים למעקב
