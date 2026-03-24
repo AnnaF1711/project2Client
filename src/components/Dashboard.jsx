@@ -12,7 +12,7 @@ import Feed from "./Feed.jsx"; // פוסטים של מי שאני עוקבת א�
 import UserSearch from "./UserSearch.jsx"; // חיפוש משתמשים למעקב
 
 function Dashboard() {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState(null); // היוזר המצומצם שיחזור מ User Profile Response
     const [myPosts, setMyPosts] = useState([]);
     const [feedPosts, setFeedPosts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
@@ -51,6 +51,7 @@ function Dashboard() {
             .then(([profileRes, myPostsRes, feedRes, followersRes, followingRes]) => {
                 if (profileRes.data.success) {
                     setUser(profileRes.data.data); // בכל בקשה בדשבורד קונטרולר חוזר object response אם זה תקין שהשדה שלו data זה האובייקט שמחזירים
+                    // אגב מה שחוזר כאן זה היוזר המצומצם (אובייקט פרופיל שחוזר מיוזר פרופייל ריספונס)
                 }
                 if (myPostsRes.data.success) {
                     setMyPosts(myPostsRes.data.data || []);
