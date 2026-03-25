@@ -156,6 +156,35 @@ function Dashboard() {
             });
     };
 
+    const unfollowUser = (targetUsername) => {
+        axios.post(
+            "http://localhost:8080/dashboard/unfollow",
+            null,
+            {
+                headers: { Authorization: token },
+                params: { targetUsername }
+            }
+        )
+            .then((res) => {
+                if (!res.data.success) {
+                    alert("Unfollow failed: " + res.data.errorCode);
+                    return;
+                }
+
+                setFollowing((prev) =>
+                    prev.filter((username) => username !== targetUsername)
+                );
+
+                setFeedPosts((prev) =>
+                    prev.filter((post) => post.author !== targetUsername)
+                );
+            })
+            .catch((err) => {
+                console.error(err);
+                alert("Failed to unfollow user");
+            });
+    };
+
     const searchUsers = (query) => {
         if (query.trim() === "") {
             setSearchResults([]);
@@ -192,6 +221,7 @@ function Dashboard() {
                 followers={followers}
                 following={following}
                 onUpdateProfileImage={updateProfileImage}  // עדכון התמונה מתבצע דרך הפרופיל
+                onUnfollowUser={unfollowUser} // עדכון הסרת עוקב למישהו אחר
             />
 
             <UserSearch // חיפוש משתמשים למעקב (בתוך הקומפוננטה שמים להם עוקב, הבקשה כמו כולן בדשבורד אבל מנוהלת מיוזר סרץ׳)

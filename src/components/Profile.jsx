@@ -3,7 +3,7 @@ import "./Profile.css";
 import CustomButton from "./CustomButton.jsx";
 import CustomInput from "./CustomInput.jsx";
 
-function Profile({ user, followers, following, onUpdateProfileImage }) { // לא שולח את הבקשות אלא הדשבורד
+function Profile({ user, followers, following, onUpdateProfileImage, onUnfollowUser }) { // לא שולח את הבקשות אלא הדשבורד
     const [newImageUrl, setNewImageUrl] = useState("");
     const [localError,setLocalError] = useState("");
     // נציג את רשימות העוקבים/נעקבים ע״י כפתור - האם רוצים להציג אותם
@@ -16,7 +16,7 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
             setLocalError("Please enter an image URL");
             return; // אם אין שום עדכון נצא - שלא תשלח בקשה סתם
         }
-        onUpdateProfileImage(newImageUrl); // עדכון התמונה
+        onUpdateProfileImage(newImageUrl); // עדכון התמונה (זו מתודה בprops מהדשבורד ששולחת את הבקשה לשרת)
         setNewImageUrl(""); // ניקוי האינפוט אחרי עדכון התמונה
     };
 
@@ -116,9 +116,14 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
                             following.map((username) => (
                                 <div
                                     key={username}
-                                    className="profile-list-item"
-                                >
-                                    {username}
+                                    className="profile-list-item">
+                                    <span>{username}</span>
+                                    <button
+                                        className="unfollow-button"
+                                        onClick={() => onUnfollowUser(username)} // מקבל מקומפוננטת דשבורד
+                                    >
+                                        Unfollow
+                                    </button>
                                 </div>
                             ))
                         )}

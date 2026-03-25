@@ -90,9 +90,10 @@
 
 /* יוזר ברשימה */
 .profile-list-item {
-    padding: 4px 0;
-    border-bottom: 1px solid #f2f2f2;
-    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
 }
 
 .profile-list-item:last-child {
@@ -102,4 +103,17 @@
 .profile-label {
     color: black;
     font-weight: bold;
+}
+
+.unfollow-button {
+    border: none;
+    background-color: #e5e5e5;
+    color: black;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.unfollow-button:hover {
+    background-color: #d4d4d4;
 }
