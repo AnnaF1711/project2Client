@@ -53,6 +53,7 @@ function SignUp(){
                         if (response.data.success) { // אם ההרשמה הצליחה נרוקן את תוכן האינפוטים כדי לאפשר להכניס ערכים חדשים
                             setUsername("");
                             setPassword("")
+                            alert("Account created successfully !🎉 Please sign in.");
                         } else {
                             setErrorCode(response.data.errorCode); // אחרת נעדכן את השגיאה (שמוצגת בעמוד אם היא קיימת)
                         }

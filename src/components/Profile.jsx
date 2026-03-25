@@ -88,10 +88,10 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
                     />
                 </div>
 
-
                 {/*מתחת לכפתורים*/}
                 {showFollowers && (
                     <div className="profile-list-box">
+                        <span className="profile-label">Followers:</span>
                         {followers.length === 0 ? ( // אם אין עוקבים יציג הודעה אחרת יציג את העוקבים (שמות משתמש)
                             <div>No followers yet</div>
                         ) : (
@@ -109,6 +109,7 @@ function Profile({ user, followers, following, onUpdateProfileImage }) { // לא
 
                 {showFollowing && (
                     <div className="profile-list-box">
+                        <span className="profile-label">Following:</span>
                         {following.length === 0 ? (
                             <div>Not following anyone yet</div>
                         ) : (

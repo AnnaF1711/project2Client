@@ -12,7 +12,7 @@ import Feed from "./Feed.jsx"; // פוסטים של מי שאני עוקבת א�
 import UserSearch from "./UserSearch.jsx"; // חיפוש משתמשים למעקב
 
 function Dashboard() {
-    const [user, setUser] = useState(null); // היוזר המצומצם שיחזור מ User Profile Response
+    const [user, setUser] = useState(null); // היוזר המצומצם שיחזור מ User Profile Response (יחזור מהשרת אובייקט פרופיל שנשים במשתנה הזה
     const [myPosts, setMyPosts] = useState([]);
     const [feedPosts, setFeedPosts] = useState([]);
     const [searchResults, setSearchResults] = useState([]);
@@ -121,19 +121,39 @@ function Dashboard() {
             }
         )
             .then((res) => {
-                if (res.data.success) {
-                    // רענון פיד אחרי follow
-                    return axios.get("http://localhost:8080/dashboard/feed", {
-                        headers: { Authorization: token }
-                    });
+                if (!res.data.success) {
+                    alert("Follow failed: " + res.data.errorCode);
+                    return null;
                 }
+
+                return Promise.all([
+                    axios.get("http://localhost:8080/dashboard/feed", {
+                        headers: { Authorization: token }
+                    }),
+                    axios.get("http://localhost:8080/dashboard/following", {
+                        headers: { Authorization: token }
+                    })
+                ]);
             })
-            .then((feedRes) => {
-                if (feedRes?.data?.success) {
+            .then((responses) => {
+                if (!responses) {
+                    return;
+                }
+
+                const [feedRes, followingRes] = responses;
+
+                if (feedRes.data.success) {
                     setFeedPosts(feedRes.data.data || []);
                 }
+
+                if (followingRes.data.success) {
+                    setFollowing(followingRes.data.data || []);
+                }
             })
-            .catch(() => alert("Failed to follow user"));
+            .catch((err) => {
+                console.error(err);
+                alert("Failed to follow user");
+            });
     };
 
     const searchUsers = (query) => {

@@ -26,6 +26,7 @@
     font-weight: bold;
     font-size: 16px;
     margin-bottom: 4px;
+    color: black;
 }
 
 .profile-stats {
@@ -84,14 +85,21 @@
     overflow-y: auto;
     font-size: 13px;
     background-color: #fafafa;
+    color: black;
 }
 
 /* יוזר ברשימה */
 .profile-list-item {
     padding: 4px 0;
     border-bottom: 1px solid #f2f2f2;
+    color: black;
 }
 
 .profile-list-item:last-child {
     border-bottom: none;
+}
+
+.profile-label {
+    color: black;
+    font-weight: bold;
 }
