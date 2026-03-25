@@ -9,7 +9,6 @@ function SignUp(){
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [errorCode, setErrorCode] = useState(null);
 
-
     return(
         <div>
             {
